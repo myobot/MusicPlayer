@@ -1,0 +1,6 @@
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\bin\Debug\Id3Lib.XML
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\bin\Debug\Id3Lib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\bin\Debug\Id3Lib.pdb
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\obj\Debug\Id3Lib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\obj\Debug\Id3Lib.pdb

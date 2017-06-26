@@ -1,0 +1,8 @@
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\bin\Release\Mp3Lib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\bin\Release\Mp3Lib.pdb
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\bin\Release\Id3Lib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\bin\Release\ICSharpCode.SharpZipLib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\bin\Release\Id3Lib.pdb
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\obj\Release\Mp3Lib.csprojResolveAssemblyReference.cache
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\obj\Release\Mp3Lib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\Mp3Lib\obj\Release\Mp3Lib.pdb

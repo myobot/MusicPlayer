@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Mp3Lib.Audio">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Mp3Lib.Audio.AudioStats" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Audio\Audio.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>DAACgBAAAAACBCAAAAkAAEAAAEUAAIABCAJAAAgRAAQ=</HashCode>
+      <FileName>Audio\Audio.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_firstFrame" />
+      <Property Name="Header" />
+    </ShowAsAssociation>
+    <Lollipop Orientation="Left" Position="0.254" />
+  </Class>
+  <Class Name="Mp3Lib.AudioFrameHeader">
+    <Position X="4.75" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Mp3Lib.AudioFrameHeader.ChannelModeCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Audio\AudioFrameHeader.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Mp3Lib.AudioFrameHeader.EmphasisCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Audio\AudioFrameHeader.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BkgCQAKBABwABhAZCQAQQEAAHAkkACAhCRAAFIFCAAQ=</HashCode>
+      <FileName>Audio\AudioFrameHeader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mp3Lib.AudioFrame">
+    <Position X="7.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAUAgBAAAAACAECAAAAgCAAAAAEAAIAgAABAAAgQAEA=</HashCode>
+      <FileName>Audio\AudioFrame.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_header" />
+      <Property Name="Header" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Mp3Lib.AudioFile" BaseTypeListCollapsed="true">
+    <Position X="1.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAIAAAAAAAEEAIAAAAEAAAAABEAQ=</HashCode>
+      <FileName>Audio\AudioFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mp3Lib.AudioBuffer" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAgAAEEAAAAAAAAAAAABAAQ=</HashCode>
+      <FileName>Audio\AudioBuffer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mp3Lib.AudioFrameXingHeader">
+    <Position X="6" Y="8.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Mp3Lib.AudioFrameXingHeader.FieldsCode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Audio\AudioFrameXingHeader.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BAAAgBAAAAAiABAAQAAQAEAAAAEAAIQAAABAAAASpAA=</HashCode>
+      <FileName>Audio\AudioFrameXingHeader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mp3Lib.AudioFrameVbriHeader">
+    <Position X="8.25" Y="8.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>JBAAgBQAAAACgQgAAAAAAIAAAAEIAIAAAABAAAASAAA=</HashCode>
+      <FileName>Audio\AudioFrameVbriHeader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mp3Lib.AudioFrameFactory">
+    <Position X="9.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAACAAAAAAAAAAAAAEEBAAAAAAAAAA=</HashCode>
+      <FileName>Audio\AudioFrameFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

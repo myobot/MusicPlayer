@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1EC301AF-D0A5-4D09-85DF-9E5CBF811C97}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>音乐播放器</RootNamespace>
+    <AssemblyName>音乐播放器</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TXTClass">
+      <HintPath>C:\Users\Lenovo\Desktop\C#大作业\MumiMusic5\MumiMusic\MumiMusic\bin\Debug\TXTClass.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Component1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component1.Designer.cs">
+      <DependentUpon>Component1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogResult.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KeyboardHook.cs" />
+    <Compile Include="Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MusicandLrc.cs" />
+    <Compile Include="MusicInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MusicInfo.Designer.cs">
+      <DependentUpon>MusicInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Regist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Regist.Designer.cs">
+      <DependentUpon>Regist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowLrc.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="UserDAO.cs" />
+    <Compile Include="UsersMusicAndPicture.cs" />
+    <EmbeddedResource Include="Component1.resx">
+      <DependentUpon>Component1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MusicInfo.resx">
+      <DependentUpon>MusicInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Regist.resx">
+      <DependentUpon>Regist.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Ctrl\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Bass.Net\bass.dll" />
+    <Content Include="Bass.Net\Bass.Net.dll" />
+    <Content Include="image\+.png" />
+    <None Include="image\9.jpg" />
+    <None Include="image\8.jpg" />
+    <None Include="image\7.jpg" />
+    <None Include="image\背景.jpg" />
+    <None Include="image\5.jpg" />
+    <None Include="image\4.jpg" />
+    <None Include="image\3.jpg" />
+    <None Include="image\2.jpg" />
+    <None Include="image\1.jpg" />
+    <None Include="image\0.jpg" />
+    <Content Include="image\02.png" />
+    <Content Include="image\04.png" />
+    <Content Include="image\05.png" />
+    <Content Include="image\06.png" />
+    <Content Include="image\07.png" />
+    <Content Include="image\08.png" />
+    <Content Include="image\10.png" />
+    <Content Include="image\13.png" />
+    <Content Include="image\5227088431cc1.jpg" />
+    <Content Include="image\back.png" />
+    <Content Include="image\bk.png" />
+    <Content Include="image\Category.png" />
+    <Content Include="image\CLOSE %281%29.png" />
+    <Content Include="image\CLOSE.png" />
+    <Content Include="image\delete.png" />
+    <None Include="image\favor %281%29.png" />
+    <None Include="image\favor.png" />
+    <Content Include="image\favorite.png" />
+    <None Include="image\favor_fill %281%29.png" />
+    <None Include="image\favor_fill.png" />
+    <None Include="image\Hotel.png" />
+    <None Include="image\iconfont-随机播放-01-01.png" />
+    <Content Include="image\icon_qqmusic.png" />
+    <None Include="image\imgae.png" />
+    <Content Include="image\MINUS %281%29.png" />
+    <Content Include="image\MINUS.png" />
+    <Content Include="image\more.png" />
+    <None Include="image\上一首 %281%29.png" />
+    <None Include="image\上一首 %282%29.png" />
+    <None Include="image\上一首 %283%29.png" />
+    <None Include="image\上一首 %284%29.png" />
+    <None Include="image\上一首 %285%29.png" />
+    <None Include="image\上一首 %286%29.png" />
+    <None Include="image\上一首 %287%29.png" />
+    <None Include="image\上一首 %288%29.png" />
+    <None Include="image\上一首 %289%29.png" />
+    <None Include="image\play %281%29.png" />
+    <None Include="image\play.png" />
+    <None Include="image\timg.jpg" />
+    <Content Include="image\上一首.png" />
+    <None Include="image\下一首 %281%29.png" />
+    <None Include="image\下一首 %282%29.png" />
+    <None Include="image\下一首 %283%29.png" />
+    <None Include="image\下一首 %284%29.png" />
+    <None Include="image\下一首 %285%29.png" />
+    <Content Include="image\下一首.png" />
+    <None Include="image\公路.png" />
+    <Content Include="image\关闭 %281%29.png" />
+    <Content Include="image\关闭 %282%29.png" />
+    <Content Include="image\关闭 %283%29.png" />
+    <None Include="image\关闭 %284%29.png" />
+    <None Include="image\关闭 %285%29.png" />
+    <Content Include="image\关闭.png" />
+    <None Include="image\列表循环 %281%29.png" />
+    <None Include="image\列表循环 %282%29.png" />
+    <None Include="image\列表循环 %283%29.png" />
+    <None Include="image\列表循环 %285%29.png" />
+    <Content Include="image\列表循环.png" />
+    <None Include="image\删除 %281%29.png" />
+    <None Include="image\删除.png" />
+    <None Include="image\单曲循环 %281%29.png" />
+    <None Include="image\单曲循环 %282%29.png" />
+    <None Include="image\单曲循环 %283%29.png" />
+    <None Include="image\单曲循环 %284%29.png" />
+    <None Include="image\单曲循环 %285%29.png" />
+    <Content Include="image\单曲循环.png" />
+    <None Include="image\声音 %281%29.png" />
+    <None Include="image\声音.png" />
+    <None Include="image\头像.png" />
+    <None Include="image\富士山.png" />
+    <None Include="image\夜晚2.png" />
+    <None Include="image\密码.png" />
+    <None Include="image\圆点.png" />
+    <None Include="image\右箭头 %281%29.png" />
+    <None Include="image\右箭头.png" />
+    <Content Include="image\山.png" />
+    <None Include="image\换肤.png" />
+    <None Include="image\循环.png" />
+    <Content Include="image\播放 %281%29.png" />
+    <None Include="image\播放 %282%29.png" />
+    <None Include="image\播放 %283%29.png" />
+    <None Include="image\播放 %284%29.png" />
+    <None Include="image\播放 %285%29.png" />
+    <None Include="image\播放 %286%29.png" />
+    <None Include="image\播放 %287%29.png" />
+    <None Include="image\播放 %288%29.png" />
+    <None Include="image\播放 %289%29.png" />
+    <Content Include="image\播放.png" />
+    <None Include="image\暂停 %281%29.png" />
+    <None Include="image\暂停.png" />
+    <Content Include="image\最小化 %281%29.png" />
+    <Content Include="image\最小化 %282%29.png" />
+    <Content Include="image\最小化 %283%29.png" />
+    <Content Include="image\最小化 %284%29.png" />
+    <None Include="image\最小化 %285%29.png" />
+    <Content Include="image\最小化 %287%29.png" />
+    <Content Include="image\最小化 %288%29.png" />
+    <Content Include="image\最小化.png" />
+    <None Include="image\添加 %281%29.png" />
+    <None Include="image\添加.png" />
+    <None Include="image\添加 %284%29.png" />
+    <None Include="image\添加 %285%29.png" />
+    <None Include="image\未标题-3.jpg" />
+    <None Include="image\电脑 %283%29.png" />
+    <None Include="image\用户名.png" />
+    <None Include="image\用户名 %281%29.png" />
+    <None Include="image\用户名 %282%29.png" />
+    <None Include="image\用户名 %283%29.png" />
+    <None Include="image\登录.png" />
+    <None Include="image\注册.png" />
+    <Content Include="image\皮肤 %281%29.png" />
+    <None Include="image\皮肤 %282%29.png" />
+    <Content Include="image\皮肤.png" />
+    <None Include="image\随机 %281%29.png" />
+    <None Include="image\随机.png" />
+    <None Include="image\运行一次 %281%29.png" />
+    <None Include="image\运行一次.png" />
+    <None Include="image\随机播放 %281%29.png" />
+    <None Include="image\随机播放 %282%29.png" />
+    <Content Include="image\随机播放.png" />
+    <None Include="image\静音 %281%29.png" />
+    <None Include="image\静音.png" />
+    <None Include="image\音乐.png" />
+    <None Include="image\音乐 %281%29.png" />
+    <None Include="image\音乐.ico" />
+    <None Include="image\音乐 %282%29.png" />
+    <Content Include="image\音乐2.ico" />
+    <Content Include="image\音量.png" />
+    <Content Include="image\顺序播放.png" />
+    <Content Include="image\鹿鹿.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="WMPNSSCI">
+      <Guid>{453E9E02-8BA4-474C-BFA0-37727E44F6AE}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="ID3Lib\Id3Lib.csproj">
+      <Project>{4c0e405b-fbe5-4949-8953-0b4aeb0d22b8}</Project>
+      <Name>Id3Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="Mp3Lib\Mp3Lib.csproj">
+      <Project>{e16e2254-a7a2-4e45-95b9-8613c67b3fd4}</Project>
+      <Name>Mp3Lib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

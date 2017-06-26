@@ -1,0 +1,532 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0053)http://mpgedit.org/mpgedit/mpeg_format/MP3Format.html -->
+<HTML><HEAD><TITLE>MP3 File Format Specification</TITLE>
+<META content="MSHTML 6.00.2800.1126" name=GENERATOR>
+<META content="Gabriel Bouvigne" name=Author>
+<META 
+content="aac audio code coding compression compressor download encoder iso layer mp2 mp3 mp4 mpg mpeg mpeg2 mpeg4 music natural patent patents perceptual player programming sound source test tests twinvq twin-vq vqf" 
+name=keywords>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1"></HEAD>
+<BODY>
+<H1>
+<CENTER><A href="http://mpgedit.org/mpgedit/mpeg_format/mpeghdr.htm">Incomplete; 
+check here!</A></CENTER></H1>
+<P>
+<CENTER>
+<TABLE cellSpacing=2 cellPadding=0 width="90%" bgColor=#ffffff border=0>
+  <TBODY>
+  <TR>
+    <TD width="100%" bgColor=#bbbbbb height=38><FONT color=#ffffff 
+      size=+2>MPEG Audio Layer I/II/III frame header</FONT></TD></TR>
+  <TR>
+    <TD vAlign=top width="100%" 
+    background="MP3 File Format Specification_files/code.gif">
+      <DIR>
+      <P> 
+      <P>An MPEG audio file is built up from smaller parts called frames. 
+      Generally, frames are independent items. Each frame has its own header and 
+      audio informations. As there is no file header, you can cut any part of 
+      MPEG file and play it correctly (this should be done on frame boundaries 
+      but most applications will handle incorrect headers). However, for Layer 
+      III, this is not 100% correct. Due to internal data organization in MPEG 
+      Layer III files, frames are often dependent of each other and they cannot 
+      be cut off just like that. 
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;When you want to read info about an MPEG file, 
+      it is usually enough to find the first frame, read its header and assume 
+      that the other frames are the same. But this may not be always the case. 
+      Variable bitrate MPEG files may use so called bitrate switching, which 
+      means that bitrate changes according to the content of each frame. This 
+      way lower bitrates may be used in frames where it will not reduce sound 
+      quality. This allows making better compression while keeping high quality 
+      of sound. 
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;The frame header is constituted by the very 
+      first four bytes (32bits) in a frame. The first eleven bits (or first 
+      twelve bits, see below about frame sync) of a frame header are always set 
+      and they are called "frame sync". Therefore, you can search through the 
+      file for the first occurence of frame sync (meaning that you have to find 
+      a byte with a value of 255, and followed by a byte with its three (or 
+      four) most significant bits set). Then you read the whole header and check 
+      if the values are correct. You will see in the following table the exact 
+      meaning of each bit in the header. Each value that is specified as 
+      reserved, invalid, bad, or not allowed should indicate an invalid header. 
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;Frames may have a CRC check. The CRC is 16 bits 
+      long and, if it exists, it follows the frame header. After the CRC comes 
+      the audio data. You may calculate the CRC of the frame, and compare it 
+      with the one you read from the file. This is actually a very good method 
+      to check the MPEG frame validity. 
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;Here is a presentation of the header content. 
+      Characters from A to M are used to indicate different fields. In the table 
+      below, you can see details about the content of each field. 
+      <P>
+      <CENTER><B><FONT face="Courier New, Courier, mono" size=+2>AAAAAAAA 
+      AAABBCCD EEEEFFGH IIJJKLMM</FONT></B></CENTER>
+      <P>
+      <TABLE cellSpacing=7 cellPadding=0 border=0>
+        <TBODY>
+        <TR vAlign=top bgColor=#bbbbbb>
+          <TD><B><FONT face="Arial, Helvetica, sans-serif" 
+            color=#ffffff>Sign</FONT></B></TD>
+          <TD><B><FONT face="Arial, Helvetica, sans-serif" 
+            color=#ffffff>Length<BR>(bits)</FONT></B></TD>
+          <TD><B><FONT face="Arial, Helvetica, sans-serif" 
+            color=#ffffff>Position<BR>(bits)</FONT></B></TD>
+          <TD><B><FONT face="Arial, Helvetica, sans-serif" 
+            color=#ffffff>Description</FONT></B></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>A</TD>
+          <TD>11</TD>
+          <TD>(31-21)</TD>
+          <TD>Frame sync (all bits set)</TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>B</TD>
+          <TD>2</TD>
+          <TD>(20,19)</TD>
+          <TD>
+            <P>MPEG Audio version ID<BR>00 - MPEG Version 2.5 (unofficial)<BR>01 
+            - reserved<BR>10 - MPEG Version 2 (ISO/IEC 13818-3)<BR>11 - MPEG 
+            Version 1 (ISO/IEC 11172-3)</P>
+            <P>Note: MPEG Version 2.5 is not official standard. It is an 
+            extension of the standard used for very low bitrate files. If your 
+            decoder does not support this extension, it is recommended for you 
+            to use 12 bits for synchronization instead of 11 bits.</P></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>C</TD>
+          <TD>2</TD>
+          <TD>(18,17)</TD>
+          <TD>Layer description<BR>00 - reserved<BR>01 - Layer III<BR>10 - 
+            Layer II<BR>11 - Layer I</TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>D</TD>
+          <TD>1</TD>
+          <TD>(16)</TD>
+          <TD>Protection bit<BR>0 - Protected by CRC (16bit crc follows 
+            header)<BR>1 - Not protected</TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>E</TD>
+          <TD>4</TD>
+          <TD>(15,12)</TD>
+          <TD>
+            <P>Bitrate index<BR>
+            <TABLE cellSpacing=0 cellPadding=0 border=1 cellpading="0">
+              <TBODY>
+              <TR>
+                <TD>bits</TD>
+                <TD>V1,L1</TD>
+                <TD>V1,L2</TD>
+                <TD>V1,L3</TD>
+                <TD>V2,L1</TD>
+                <TD>V2, L2 &amp; L3</TD></TR>
+              <TR>
+                <TD>0000</TD>
+                <TD>free</TD>
+                <TD>free</TD>
+                <TD>free</TD>
+                <TD>free</TD>
+                <TD>free</TD></TR>
+              <TR>
+                <TD>0001</TD>
+                <TD>32</TD>
+                <TD>32</TD>
+                <TD>32</TD>
+                <TD>32</TD>
+                <TD>8</TD></TR>
+              <TR>
+                <TD>0010</TD>
+                <TD>64</TD>
+                <TD>48</TD>
+                <TD>40</TD>
+                <TD>48</TD>
+                <TD>16</TD></TR>
+              <TR>
+                <TD>0011</TD>
+                <TD>96</TD>
+                <TD>56</TD>
+                <TD>48</TD>
+                <TD>56</TD>
+                <TD>24</TD></TR>
+              <TR>
+                <TD>0100</TD>
+                <TD>128</TD>
+                <TD>64</TD>
+                <TD>56</TD>
+                <TD>64</TD>
+                <TD>32</TD></TR>
+              <TR>
+                <TD>0101</TD>
+                <TD>160</TD>
+                <TD>80</TD>
+                <TD>64</TD>
+                <TD>80</TD>
+                <TD>40</TD></TR>
+              <TR>
+                <TD>0110</TD>
+                <TD>192</TD>
+                <TD>96</TD>
+                <TD>80</TD>
+                <TD>96</TD>
+                <TD>48</TD></TR>
+              <TR>
+                <TD>0111</TD>
+                <TD>224</TD>
+                <TD>112</TD>
+                <TD>96</TD>
+                <TD>112</TD>
+                <TD>56</TD></TR>
+              <TR>
+                <TD>1000</TD>
+                <TD>256</TD>
+                <TD>128</TD>
+                <TD>112</TD>
+                <TD>128</TD>
+                <TD>64</TD></TR>
+              <TR>
+                <TD>1001</TD>
+                <TD>288</TD>
+                <TD>160</TD>
+                <TD>128</TD>
+                <TD>144</TD>
+                <TD>80</TD></TR>
+              <TR>
+                <TD>1010</TD>
+                <TD>320</TD>
+                <TD>192</TD>
+                <TD>160</TD>
+                <TD>160</TD>
+                <TD>96</TD></TR>
+              <TR>
+                <TD>1011</TD>
+                <TD>352</TD>
+                <TD>224</TD>
+                <TD>192</TD>
+                <TD>176</TD>
+                <TD>112</TD></TR>
+              <TR>
+                <TD>1100</TD>
+                <TD>384</TD>
+                <TD>256</TD>
+                <TD>224</TD>
+                <TD>192</TD>
+                <TD>128</TD></TR>
+              <TR>
+                <TD>1101</TD>
+                <TD>416</TD>
+                <TD>320</TD>
+                <TD>256</TD>
+                <TD>224</TD>
+                <TD>144</TD></TR>
+              <TR>
+                <TD>1110</TD>
+                <TD>448</TD>
+                <TD>384</TD>
+                <TD>320</TD>
+                <TD>256</TD>
+                <TD>160</TD></TR>
+              <TR>
+                <TD>1111</TD>
+                <TD>bad</TD>
+                <TD>bad</TD>
+                <TD>bad</TD>
+                <TD>bad</TD>
+                <TD>bad</TD></TR></TBODY></TABLE></P>
+            <P>NOTES: All values are in kbps<BR>V1 - MPEG Version 1<BR>V2 - MPEG 
+            Version 2 and Version 2.5<BR>L1 - Layer I<BR>L2 - Layer II<BR>L3 - 
+            Layer III<BR><BR>"free" means free format. If the correct fixed 
+            bitrate (such files cannot use variable bitrate) is different than 
+            those presented in upper table it must be determined by the 
+            application. This may be implemented only for internal purposes 
+            since third party applications have no means to findout correct 
+            bitrate. Howewer, this is not impossible to do but demands lots of 
+            efforts.<BR>"bad" means that this is not an allowed value</P>
+            <P>MPEG files may have variable bitrate (VBR). Each frame may be 
+            created with different bitrate. It may be used in all layers. Layer 
+            III decoders must support this method. Layer I &amp; II decoders may 
+            support it.</P>
+            <P>For Layer II there are some combinations of bitrate and mode 
+            which are not allowed. Here is a list of allowed combinations. 
+            <TABLE cellSpacing=0 cellPadding=0 align=center border=1>
+              <TBODY>
+              <TR>
+                <TD>bitrate</TD>
+                <TD>
+                  <P>
+                  <CENTER>single channel</CENTER></TD>
+                <TD>
+                  <P>
+                  <CENTER>stereo</CENTER></TD>
+                <TD>
+                  <P>
+                  <CENTER>intensity stereo</CENTER></TD>
+                <TD>
+                  <P>
+                  <CENTER>dual channel</CENTER></TD></TR>
+              <TR>
+                <TD>free</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>32</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD></TR>
+              <TR>
+                <TD>48</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD></TR>
+              <TR>
+                <TD>56</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD></TR>
+              <TR>
+                <TD>64</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>80</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD></TR>
+              <TR>
+                <TD>96</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>112</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>128</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>160</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>192</TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>224</TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>256</TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>320</TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR>
+              <TR>
+                <TD>384</TD>
+                <TD bgColor=#ffcccc>
+                  <P>
+                  <CENTER>no</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD>
+                <TD bgColor=#ccffcc>
+                  <P>
+                  <CENTER>yes</CENTER></TD></TR></TBODY></TABLE></P></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>F</TD>
+          <TD>2</TD>
+          <TD>(11,10)</TD>
+          <TD>Sampling rate frequency index (values are in Hz) 
+            <TABLE cellSpacing=0 cellPadding=0 border=1 cellpading="0">
+              <TBODY>
+              <TR>
+                <TD>bits</TD>
+                <TD>MPEG1</TD>
+                <TD>MPEG2</TD>
+                <TD>MPEG2.5</TD></TR>
+              <TR>
+                <TD>00</TD>
+                <TD>44100</TD>
+                <TD>22050</TD>
+                <TD>11025</TD></TR>
+              <TR>
+                <TD>01</TD>
+                <TD>48000</TD>
+                <TD>24000</TD>
+                <TD>12000</TD></TR>
+              <TR>
+                <TD>10</TD>
+                <TD>32000</TD>
+                <TD>16000</TD>
+                <TD>8000</TD></TR>
+              <TR>
+                <TD>11</TD>
+                <TD>reserv.</TD>
+                <TD>reserv.</TD>
+                <TD>reserv.</TD></TR></TBODY></TABLE></TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>G</TD>
+          <TD>1</TD>
+          <TD>(9)</TD>
+          <TD>Padding bit<BR>0 - frame is not padded<BR>1 - frame is padded 
+            with one extra slot<BR>Padding is used to fit the bit rates exactly. 
+            For an example: 128k 44.1kHz layer II uses a lot of 418 bytes and 
+            some of 417 bytes long frames to get the exact 128k bitrate. For 
+            Layer I slot is 32 bits long, for Layer II and Layer III slot is 8 
+            bits long.</TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>H</TD>
+          <TD>1</TD>
+          <TD>(8)</TD>
+          <TD>Private bit. It may be freely used for specific needs of an 
+            application.</TD></TR>
+        <TR vAlign=top>
+          <TD bgColor=#eeeeee>I</TD>
+          <TD>2</TD>
+          <TD>(7,6)</TD>
+          <TD>Channel Mode<BR>00 - Stereo<BR>01 - Joint stereo (Stereo)<BR>10 
+            - Dual channel (2 mono channels)<BR>11 - Single channel 
+            (Mono)<BR><BR>Note: Dual channel files are made of two independant 
+            mono channel. Each one uses exactly half the bitrate of the file. 
+            Most decoders output them as stereo, but it might not always be the 
+            case.<BR>&nbsp;&nbsp;&nbsp;&nbsp;One example of use would be some 
+            speech in two different languages carried in the same bitstream, and 
+            and appropriate decoder would decode only the choosen language 
+          &lt;/&gt;</TD></TR></TBODY></TABLE></P></DIR></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>

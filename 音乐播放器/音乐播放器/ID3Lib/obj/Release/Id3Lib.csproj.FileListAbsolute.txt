@@ -1,0 +1,6 @@
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\bin\Release\Id3Lib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\bin\Release\Id3Lib.pdb
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\bin\Release\ICSharpCode.SharpZipLib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\obj\Release\Id3Lib.csprojResolveAssemblyReference.cache
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\obj\Release\Id3Lib.dll
+C:\Users\Lenovo\Desktop\csid3lib-v0.6-src\id3lib\ID3Lib\obj\Release\Id3Lib.pdb

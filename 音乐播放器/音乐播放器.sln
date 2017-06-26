@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "音乐播放器", "音乐播放器\音乐播放器.csproj", "{1EC301AF-D0A5-4D09-85DF-9E5CBF811C97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mp3Lib", "音乐播放器\Mp3Lib\Mp3Lib.csproj", "{E16E2254-A7A2-4E45-95B9-8613C67B3FD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Id3Lib", "音乐播放器\ID3Lib\Id3Lib.csproj", "{4C0E405B-FBE5-4949-8953-0B4AEB0D22B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1EC301AF-D0A5-4D09-85DF-9E5CBF811C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EC301AF-D0A5-4D09-85DF-9E5CBF811C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EC301AF-D0A5-4D09-85DF-9E5CBF811C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EC301AF-D0A5-4D09-85DF-9E5CBF811C97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E16E2254-A7A2-4E45-95B9-8613C67B3FD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E16E2254-A7A2-4E45-95B9-8613C67B3FD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E16E2254-A7A2-4E45-95B9-8613C67B3FD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E16E2254-A7A2-4E45-95B9-8613C67B3FD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C0E405B-FBE5-4949-8953-0B4AEB0D22B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C0E405B-FBE5-4949-8953-0B4AEB0D22B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C0E405B-FBE5-4949-8953-0B4AEB0D22B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C0E405B-FBE5-4949-8953-0B4AEB0D22B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

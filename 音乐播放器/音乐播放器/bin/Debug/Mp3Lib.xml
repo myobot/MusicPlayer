@@ -1,0 +1,1120 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Mp3Lib</name>
+    </assembly>
+    <members>
+        <member name="F:Mp3Lib.Audio._firstFrame">
+            <summary>
+            first audio frame; could be could be xing or vbri header
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Audio._id3DurationTag">
+            <summary>
+            duration of the audio block, as parsed from the optional ID3v2 "TLEN" tag
+            the Xing/VBRI header is more authoritative for bitrate calculations, if present.
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Audio._audioStats">
+            <summary>
+            number of frames and audio bytes - obtained by counting the entire file - slow!
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Audio._hasInconsistencies">
+            <summary>
+            flag that is set on parse error.
+            This might turn into an enum for different errors at some point
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.Audio.#ctor(Mp3Lib.AudioFrame,System.Nullable{System.TimeSpan})">
+            <summary>
+            construct object to wrap the audio
+            passing in audio size and id3 length tag (if any) to help with bitrate calculations
+            </summary>
+            <param name="firstFrame"></param>
+            <param name="id3DurationTag">length from ID3v2, if any</param>
+        </member>
+        <member name="P:Mp3Lib.Audio.Header">
+            <summary>
+            the mp3 frame header number of bytes of audio data in AudioStream
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.DebugString">
+            <summary>
+            text info, e.g. the encoding standard of audio data in AudioStream
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.IsVbr">
+            <summary>
+            is it a VBR file? i.e. is it better encoding quality than cbr at the same bitrate?
+            first we make a guess based on the audio header found in the first frame.
+            </summary>
+            <remarks>
+            if the frame didn't have any strong opinions,
+            we don't check if the mp3 audio header bitrate is the same as the calculated bitrate
+            because a truncated file shows up as vbr (because the bitrates don't match)
+            and we just return false.
+            </remarks>
+        </member>
+        <member name="P:Mp3Lib.Audio.HasVbrHeader">
+            <summary>
+            does it have a VBR (VBRI, XING, INFO, LAME) header?
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.NumPayloadBytes">
+            <summary>
+            the number of bytes of data in the Audio payload
+            always the real size of the file
+            supplied by AudioFile or AudioBuffer
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.NumAudioBytes">
+            <summary>
+            Number of bytes playable audio, VBR header priority, best for calculating bitrates
+            </summary>
+            <remarks>
+            if there is no xing/vbri header, it's the same as NumPayloadBytes
+            if the xing header doesn't have the audio bytes filled in, 
+            it can still return 'don't know, but you need to take one header off the file length'
+            </remarks>
+        </member>
+        <member name="P:Mp3Lib.Audio.NumPayloadFrames">
+            <summary>
+            Number of Frames in file (including the header frame)
+            VBR header priority, best for calculating bitrates
+            or if not present, calculated from the number of bytes in the audio block, as reported by the caller
+            This will be correct for CBR files, at least.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.NumAudioFrames">
+            <summary>
+            Number of Frames of playable audio
+            </summary>
+            <remarks>
+            if there is no xing/vbri header, it's the same as NumPayloadFrames
+            if the xing header doesn't have the audio frames filled in, 
+            it can still return 'don't know, but you need to take one header off the file length'
+            </remarks>
+        </member>
+        <member name="P:Mp3Lib.Audio.Duration">
+            <summary>
+            Number of seconds for bitrate calculations.
+            first get it from the xing/vbri headers,
+            then from the id3 TLEN tag,
+            then from the file size and initial frame bitrate.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.BitRateCalc">
+            <summary>
+            bitrate calculated from the id3 length tag, and the length of the audio
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.BitRateMp3">
+            <summary>
+            bitrate published in the standard mp3 header
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.BitRateVbr">
+            <summary>
+            vbr bitrate from xing or vbri header frame
+            audio without xing or vbri header returns null
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.BitRate">
+            <summary>
+            overall best guess of bitrate; there's always a way of guessing it
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.HasInconsistencies">
+            <summary>
+            did it parse without any errors?
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Audio.ParsingError">
+            <summary>
+            get the error from the parse operation, if any
+            </summary>
+            <remarks>
+            should the parse operation save all thrown exceptions here,
+            and not generate it on demand?
+            </remarks>
+        </member>
+        <member name="M:Mp3Lib.Audio.ScanWholeFile">
+            <summary>
+            Count frames and bytes of file to see who's telling porkies
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioBuffer._sourceBuffer">
+            <summary>
+            holds audio stream locked so we can rely on it when saving
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioBuffer.#ctor(System.Byte[],System.Nullable{System.TimeSpan})">
+            <summary>
+            construct audio file
+            passing in audio size and id3 length tag (if any) to help with bitrate calculations
+            </summary>
+            <param name="sourceBuffer"></param>
+            <param name="id3DurationTag"></param>
+        </member>
+        <member name="P:Mp3Lib.AudioBuffer.DebugString">
+            <summary>
+            text info, e.g. the encoding standard of audio data in AudioStream
+            /// </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioBuffer.NumPayloadBytes">
+            <summary>
+            the number of bytes of data in AudioStream, always the real size of the file
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioBuffer.OpenAudioStream">
+            <summary>
+            the stream containing the audio data, wound to the start
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioBuffer.CalculateAudioSHA1">
+            <summary>
+            calculate sha-1 of the audio data
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFile._sourceFileInfo">
+            <summary>
+            holds audio stream filename; opened afresh when we need the data
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFile._payloadStart">
+            <summary>
+            offset from start of stream that the audio starts at
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFile._payloadNumBytes">
+            <summary>
+            total length (bytes) of mp3 audio frames in the file,
+            could be different from what's declared in the header if the file is corrupt.
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioFile.#ctor(System.IO.FileInfo,System.UInt32,System.UInt32,System.Nullable{System.TimeSpan})">
+            <summary>
+            construct audio file
+            passing in audio size and id3 length tag (if any) to help with bitrate calculations
+            </summary>
+            <param name="sourceFileInfo"></param>
+            <param name="audioStart"></param>
+            <param name="payloadNumBytes"></param>
+            <param name="id3DurationTag"></param>
+        </member>
+        <member name="P:Mp3Lib.AudioFile.DebugString">
+            <summary>
+            text info, e.g. the encoding standard of audio data in AudioStream
+            /// </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFile.NumPayloadBytes">
+            <summary>
+            the number of bytes of data in AudioStream, always the real size of the file
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioFile.OpenAudioStream">
+            <summary>
+            the stream containing the audio data, wound to the start
+            </summary>
+            <remarks>
+            it is the caller's responsibility to dispose of the returned stream
+            and to call NumPayloadBytes to know how many bytes to read.
+            </remarks>
+        </member>
+        <member name="M:Mp3Lib.AudioFile.CalculateAudioSHA1">
+            <summary>
+            calculate sha-1 of the audio data
+            </summary>
+        </member>
+        <member name="T:Mp3Lib.AudioFrame">
+            <summary>
+            Read mp3 frame
+            </summary>
+            <remarks>
+            additional info: http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
+            </remarks>
+        </member>
+        <member name="F:Mp3Lib.AudioFrame._frameBuffer">
+            <summary>
+            byte array containing entire raw frame data
+            correct size, even for free bitrate files
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrame._header">
+            <summary>
+            MP3FrameHeader to work out how big the frame is
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrame._headerBytes">
+            <summary>
+            size of mp3 standard header; offset to xing or vbri header (if present)
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.Header">
+            <summary>
+            MP3FrameHeader has all sorts of info about a frame of raw mp3 audio
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.FrameLengthInBytes">
+            <summary>
+            get stored frame length
+            </summary>
+            <remarks>
+            obtained from header, or distance between frames, at construction time.
+            </remarks>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.DebugString">
+            <summary>
+            text info, e.g. the encoding standard of audio data in AudioStream
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.IsVbr">
+            <summary>
+            is it a VBR file?
+            all we can do here is check the bitrate is not 'free' (which would imply CBR)
+            then FrameVbriHeader/FrameXingHeader can override it.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.NumPayloadBytes">
+            <summary>
+            Number of Bytes in file (including this header frame)
+            if VBR header not present, we can't know, so return null.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.NumAudioBytes">
+            <summary>
+            Number of bytes playable audio
+            if VBR header not present, we can't know, so return null.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.NumPayloadFrames">
+            <summary>
+            Number of Frames in file
+            if VBR header not present, we can't know, so return null.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.NumAudioFrames">
+            <summary>
+            Number of Frames of playable audio
+            if VBR header not present, we can't know, so return null.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.Duration">
+            <summary>
+            Number of seconds of playable audio
+            if VBR header not present, we can't know, so return null.
+            xing/vbri headers would overload this if they have better information
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.BitRateMp3">
+            <summary>
+            bitrate published in the standard mp3 header
+            null for 'free' bitrate
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.BitRateVbr">
+            <summary>
+            vbr bitrate from xing or vbri header frame
+            audio frame without xing or vbri header returns null
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioFrame.#ctor(System.Byte[])">
+            <summary>
+            construct AudioFrame from supplied bytes
+            </summary>
+            <param name="frameBuffer"></param>
+            <remarks>buffer is correct size, even for free bitrate files</remarks>
+        </member>
+        <member name="M:Mp3Lib.AudioFrame.#ctor(System.IO.Stream,Mp3Lib.AudioFrameHeader,System.UInt32,System.UInt32)">
+            <summary>
+            construct AudioFrame from a larger portion of the stream; don't rewind stream when done
+            </summary>
+            <param name="stream">source stream</param>
+            <param name="header">parsed header</param>
+            <param name="frameSize">size from header, or scanning for second frame of free bitrate file</param>
+            <param name="remainingBytes">number of bytes in audio block, as reported by the caller</param>
+        </member>
+        <member name="M:Mp3Lib.AudioFrame.#ctor(Mp3Lib.AudioFrame)">
+            <summary>
+            copy construct AudioFrame for derived classes
+            </summary>
+            <param name="other"></param>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.IsXingHeader">
+            <summary>
+            does this frame contain the 'Xing' or 'Info' markers that make it a Xing VBR header?
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.IsLameHeader">
+            <summary>
+            does this frame contain the 'Xing' or 'Info' markers that make it a Xing VBR header,
+            then the LAME marker a bit further along?
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrame.IsVbriHeader">
+            <summary>
+            does this frame contain the 'VBRI' marker that make it a fraunhofer VBR header?
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioFrame.ParseBigEndianWORD(System.Byte[],System.UInt32)">
+            <summary>
+            read 2 bytes as big-endian unsigned int from buffer
+            </summary>
+            <param name="buffer">input buffer</param>
+            <param name="index">read location</param>
+            <returns>parsed big-endian UInt16</returns>
+        </member>
+        <member name="M:Mp3Lib.AudioFrame.ParseBigEndianDWORD(System.Byte[],System.UInt32)">
+            <summary>
+            read 4 bytes as big-endian unsigned int from buffer
+            </summary>
+            <param name="buffer">input buffer</param>
+            <param name="index">read location</param>
+            <returns>parsed big-endian UInt32</returns>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameFactory.CreateFrame(System.IO.Stream,System.UInt32)">
+            <summary>
+            seek and create derived type of AudioFrame from stream
+            </summary>
+            <param name="stream">source stream, advanced by length of the frame on read</param>
+            <param name="remainingBytes">number of bytes in audio block, as reported by the caller</param>
+            <returns>wrapper for derived type of AudioFrame</returns>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameFactory.CreateFrame(System.Byte[])">
+            <summary>
+            create derived type of AudioFrame from buffer, or throw
+            </summary>
+            <param name="sourceBuffer"></param>
+            <returns>wrapper for derived type of AudioFrame</returns>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameFactory.GetNextFrameOffset(System.IO.Stream,System.UInt32)">
+            <summary>
+            skip to start of next frame
+            </summary>
+            <param name="stream"></param>
+            <param name="remainingBytes"></param>
+            <returns>number of bytes skipped, not length of frame found!</returns>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameFactory.CreateHeader(System.IO.Stream,System.UInt32)">
+            <summary>
+            Creates Header
+            </summary>
+            <remarks>
+            n.b. doesn't rewind the stream to the start of the frame.
+            If the caller wants to read the entire frame in one block, they'll have to rewind it themselves.
+            </remarks>
+            <param name="stream"></param>
+            <param name="remainingBytes"></param>
+            <returns>valid audio header, or null</returns>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameFactory.Seek(System.IO.Stream,System.Int64)">
+            <summary>
+            Find the first occurrence of an mp3 header.
+            </summary>
+            <param name="stream">The stream to perform the search on.</param>
+            <param name="remainingBytes"></param>
+            <returns>number of bytes skipped; stream is at first mp3 header position.</returns>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameFactory.ReadHeader(System.IO.Stream)">
+            <summary>
+            parse frame header, or throw.
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.DebugString">
+            <summary>
+            some text to show we decoded it correctly
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.IsVbr">
+            <summary>
+            is it a VBR file?
+            I don't think the presence of a VBRI header necessarily implies a VBR file
+            and the absence of a VBR header doesn't imply it's not VBR either,
+            but it's a good indicator, so that's the best assumption here
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.NumPayloadBytes">
+            <summary>
+            Number of Bytes in file (including this header frame)
+            (always present in VBRI header)
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.NumAudioBytes">
+            <summary>
+            Number of bytes playable audio (i.e. excluding this header frame, 
+            but including the standard header bytes of normal audio frames))
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.NumPayloadFrames">
+            <summary>
+            Number of Frames in file (including this header frame)
+            or if not present, calculated from the number of bytes in the audio block, as reported by the caller
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.NumAudioFrames">
+            <summary>
+            Number of Frames of playable audio (i.e. excluding any header frame)
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.Duration">
+            <summary>
+            Number of seconds from the id3 TLEN tag
+            vbri header *always* has better information
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameVbriHeader.BitRateVbr">
+            <summary>
+            vbr bitrate from vbri header frame
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameVbriHeader.#ctor(Mp3Lib.AudioFrame)">
+            <summary>
+            construct XingHeader frame from a pre-existing raw frame; "downcast".
+            </summary>
+            <param name="baseclass"></param>
+        </member>
+        <member name="T:Mp3Lib.AudioFrameXingHeader.FieldsCode">
+            <summary>
+            Flags which indicate what fields are present, flags are combined with a logical OR. Field is mandatory.
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameXingHeader.FieldsCode.Frames">
+            <summary>
+            Frames field is present
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameXingHeader.FieldsCode.Bytes">
+            <summary>
+            Bytes field is present
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameXingHeader.FieldsCode.Toc">
+            <summary>
+            TOC field is present
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameXingHeader.FieldsCode.Quality">
+            <summary>
+            Quality indicator field is present
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.DebugString">
+            <summary>
+            some text to show we decoded it correctly
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.IsVbr">
+            <summary>
+            is it a VBR file?
+            A file with a 'Xing' header is VBR, an 'Info' header is CBR
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.NumPayloadBytes">
+            <summary>
+            Number of Bytes in file (including this header frame) (optional)
+            or if not present, the number of bytes in audio block, as reported by the caller
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.NumAudioBytes">
+            <summary>
+            Number of bytes playable audio (i.e. excluding this header frame, 
+            but including the standard header bytes of normal audio frames))
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.NumPayloadFrames">
+            <summary>
+            Number of Frames in file (including this header frame)
+            or if not present, null
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.NumAudioFrames">
+            <summary>
+            Number of Frames of playable audio (i.e. excluding this header frame)
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.Duration">
+            <summary>
+            Number of seconds from xing header
+            if not present, then the id3 TLEN tag
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameXingHeader.BitRateVbr">
+            <summary>
+            vbr bitrate from xing header frame
+            returns null where xing header doesn't have both frames and bytes
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameXingHeader.#ctor(Mp3Lib.AudioFrame)">
+            <summary>
+            construct XingHeader frame from a pre-existing raw frame; "downcast".
+            </summary>
+            <param name="baseclass"></param>
+        </member>
+        <member name="T:Mp3Lib.AudioFrameHeader">
+            <summary>
+            Read mp3 frame header
+            </summary>
+            <remarks>
+            additional info: http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
+            </remarks>
+        </member>
+        <member name="T:Mp3Lib.AudioFrameHeader.ChannelModeCode">
+            <summary>
+            stereo mode options
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.ChannelModeCode.Stereo">
+            <summary>
+            00 - full stereo (2 indepentent channels)
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.ChannelModeCode.JointStereo">
+            <summary>
+            01 - joint stereo (stereo encoded as sum + difference)
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.ChannelModeCode.DualMono">
+            <summary>
+            10 - two independent soundtracks (e.g. 2 languages)
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.ChannelModeCode.Mono">
+            <summary>
+            11 - just one channel
+            </summary>
+        </member>
+        <member name="T:Mp3Lib.AudioFrameHeader.EmphasisCode">
+            <summary>
+            emphasis options
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.EmphasisCode.None">
+            <summary>
+            00 - none
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.EmphasisCode.E5015">
+            <summary>
+            01 - 50/15 ms
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.EmphasisCode.Reserved">
+            <summary>
+            10 - reserved
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader.EmphasisCode.CCIT">
+            <summary>
+            11 - CCIT J.17
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.AudioFrameHeader._headerBuffer">
+            <summary>
+            byte array containing at least 4 bytes of raw frame data
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.Valid">
+            <summary>
+            Simple validity check to verify all header fields are in legal ranges
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.VersionLayer">
+            <summary>
+            mpeg version and layer
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.Layer">
+            <summary>
+            mpeg layer
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.BitRate">
+            <summary>
+            bitrate for this frame
+            0 for "free", i.e. free format. The free bitrate must remain constant, 
+            and must be lower than the maximum allowed bitrate. 
+            VBR encoders usually select a different one of the standard bitrates for each frame.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.SamplesPerSecond">
+            <summary>
+            samples per second; same for every frame
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.SamplesPerFrame">
+            <summary>
+            samples per frame; same for every frame
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.SecondsPerFrame">
+            <summary>
+            seconds per frame; same for every frame
+            e.g. 384 Samples/Frame / 44100 Samples/Second = 8.7mS each
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.IsFreeBitRate">
+            <summary>
+            is it a "free" bitrate file?
+            </summary>
+            <remarks>most frames know how big they are, but free bitrate files can only know their frame length at the file level.</remarks>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.PaddingSize">
+            <summary>
+            padding size; different for every frame
+            </summary>
+            <remarks>
+            Padding is used to exactly fit the bitrate.
+            As an example: 128kbps 44.1kHz layer II uses a lot of 418 bytes
+            and some of 417 bytes long frames to get the exact 128k bitrate. 
+            For Layer I slot is 32 bits (4 bytes) long
+            For Layer II and Layer III slot is 8 bits (1 byte) long.
+            </remarks>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.FrameLengthInBytes">
+            <summary>
+            length of this frame in bytes; different for every frame
+            bitrate calculation includes the standard header bytes of normal audio frames already
+            returns null for 'free' bitrate files
+            because parsing the audio coefficients to work out how long it should be is too much work.
+            If you want to know how long the frame is, ask the audio stream, not the header.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.IdealisedFrameLengthInBytes">
+            <summary>
+            'ideal' length of a frame at this bitrate; returns double, disregards padding.
+            returns null for 'free' bitrate files
+            because parsing the audio coefficients to work out how long it should be is too much work.
+            If you want to know how long the frame should be, ask the audio stream, not the header.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.ChecksumSize">
+            <summary>
+            checksum size
+            Protection = 0 - Protected by CRC (16bit crc follows header), 1 - Not protected
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.SideInfoSize">
+            <summary>
+            channel config block size; different for every frame
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.HeaderSize">
+            <summary>
+            size of standard header
+            NB not all these bytes will have been read in
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.CRCs">
+            <summary>
+            Checksum
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.Copyright">
+            <summary>
+            Copyright
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.Original">
+            <summary>
+            Original
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.Private">
+            <summary>
+            Private
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.IsMono">
+            <summary>
+            mono; must be same for every frame
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.ChannelMode">
+            <summary>
+            stereo mode; different for every frame
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.Emphasis">
+            <summary>
+            emphasis; different for every frame
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.AudioFrameHeader.DebugString">
+            <summary>
+            some text to show we decoded it correctly
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameHeader.#ctor(System.Byte[])">
+            <summary>
+            construct MP3FrameHeader from 4 supplied bytes
+            </summary>
+            <param name="frameHeader"></param>
+        </member>
+        <member name="M:Mp3Lib.AudioFrameHeader.IsCompatible(Mp3Lib.AudioFrameHeader)">
+            <summary>
+            compare headers
+            </summary>
+        </member>
+        <member name="T:Mp3Lib.IAudio">
+            <summary>
+            interface for audio stored in file or buffer
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.Header">
+            <summary>
+            the audio header in AudioStream
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.DebugString">
+            <summary>
+            the encoding standard of audio data in AudioStream
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.IsVbr">
+            <summary>
+            is it a VBR file? i.e. is it better encoding quality than cbr at the same bitrate?
+            audio frame without xing or vbri header just checks header bitrate is 'free'
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.NumPayloadBytes">
+            <summary>
+            the number of bytes of data in the Audio payload
+            always the real size of the file
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.NumAudioBytes">
+            <summary>
+            Number of bytes playable audio
+            VBR header priority, best for calculating bitrates
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.NumPayloadFrames">
+            <summary>
+            Number of Frames in file (including the header frame)
+            VBR header priority, best for calculating bitrates
+            or if not present, calculated from the number of bytes in the audio block, as reported by the caller
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.NumAudioFrames">
+            <summary>
+            Number of Frames of playable audio
+            VBR header priority, best for calculating bitrates
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.Duration">
+            <summary>
+            Number of seconds from the xing/vbri headers,
+            or from the id3 TLEN tag,
+            or null.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.BitRateCalc">
+            <summary>
+            bit-rate calculated from the id3 length tag, and the length of the audio
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.BitRateMp3">
+            <summary>
+            bit-rate published in the standard mp3 header
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.BitRateVbr">
+            <summary>
+            the VBR bit-rate, if any
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.BitRate">
+            <summary>
+            overall best guess of bit-rate; there's always a way of guessing it
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.HasInconsistencies">
+            <summary>
+            did it parse without any errors?
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.IAudio.ParsingError">
+            <summary>
+            get the error from the parse operation, if any
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.IAudio.OpenAudioStream">
+            <summary>
+            the stream containing the audio data, wound to the start
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.IAudio.CalculateAudioSHA1">
+            <summary>
+            calculate CRC of the audio data
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.IAudio.ScanWholeFile">
+            <summary>
+            Count frames and bytes of file to see who's telling porkies
+            </summary>
+        </member>
+        <member name="T:Mp3Lib.Mp3File">
+            <summary>
+            Manage MP3 file ID3v2 tags and audio data stream.
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Mp3File._sourceFileInfo">
+            <summary>
+            name of source file
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Mp3File._mp3FileData">
+            <summary>
+            contained data for lazy initialise
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.Mp3File.#ctor(System.String)">
+            <summary>
+            Construct from file name
+            </summary>
+            <param name="file"></param>
+        </member>
+        <member name="M:Mp3Lib.Mp3File.#ctor(System.IO.FileInfo)">
+            <summary>
+            Construct from file info
+            </summary>
+            <param name="fileinfo"></param>
+        </member>
+        <member name="P:Mp3Lib.Mp3File.Mp3FileData">
+            <summary>
+            lazy-load the ID3 tags from stream and calculate where the audio must be
+            </summary>
+            <remarks>
+            if this throws an exception, the file is not usable.
+            </remarks>
+        </member>
+        <member name="P:Mp3Lib.Mp3File.FileName">
+            <summary>
+            original file containing the audio data
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Mp3File.Audio">
+            <summary>
+            wrapper for the object containing the audio payload
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Mp3File.TagModel">
+            <summary>
+            ID3v2 tags represented by the Frame Model
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Mp3File.TagHandler">
+            <summary>
+            ID3v2 tags wrapped in an interpreter that gives you real properties for each supported frame 
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.Mp3File.Update">
+            <summary>
+            Update ID3V2 and V1 tags in-situ if possible, or rewrite the file to add tags if necessary.
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.Mp3File.UpdatePacked">
+            <summary>
+            rewrite the file and ID3V2 and V1 tags with no padding.
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.Mp3File.UpdateNoV2tag">
+            <summary>
+            Update file and remove ID3V2 tag (if any); 
+            update file in-situ if possible, or rewrite the file to remove tag if necessary.
+            </summary>
+        </member>
+        <member name="T:Mp3Lib.Mp3FileData">
+            <summary>
+            Manage MP3 file data with ID3v2 tags and audio data stream.
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Mp3FileData._sourceFileInfo">
+            <summary>
+            name of source file
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Mp3FileData._audio">
+            <summary>
+            Current MP3Audio object - if re-assigned, owned by assigner.
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Mp3FileData._audioReplaced">
+            <summary>
+            set to true if the audio is replaced
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Mp3FileData._audioStart">
+            <summary>
+            offset from start of original stream that the original audio started at
+            </summary>
+        </member>
+        <member name="F:Mp3Lib.Mp3FileData._tagHandler">
+            <summary>
+            ID3v2 tag model at start of file
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.#ctor(System.IO.FileInfo)">
+            <summary>
+            Construct from file info; parse ID3 tags from stream and calculate where the audio must be
+            </summary>
+            <param name="fileinfo"></param>
+        </member>
+        <member name="P:Mp3Lib.Mp3FileData.Audio">
+            <summary>
+            wrapper for the object containing the audio payload
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Mp3FileData.TagModel">
+            <summary>
+            ID3v2 tags represented by the Frame Model
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.Mp3FileData.TagHandler">
+            <summary>
+            ID3v2 tags wrapped in an interpreter that gives you real properties for each supported frame 
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.Update">
+            <summary>
+            Update ID3V2 and V1 tags in-situ if possible, or rewrite the file to add tags if necessary.
+            </summary>
+            <returns>bool true if the MP3FileData object is dirty after this</returns>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.UpdatePacked">
+            <summary>
+            rewrite the file and ID3V2 and V1 tags with no padding.
+            </summary>
+            <returns>bool true if the MP3FileData object is dirty after this</returns>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.UpdateNoV2tag">
+            <summary>
+            Update file and remove ID3V2 tag (if any); 
+            update file in-situ if possible, or rewrite the file to remove tag if necessary.
+            </summary>
+            <returns>bool true if the MP3FileData object is unusable after this</returns>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.UpdateInSitu(System.UInt32)">
+            <summary>
+            UpdateInSitu
+            </summary>
+            <remarks>
+            doesn't make a backup as it's only modifying the tags not re-writing the audio
+            </remarks>
+            <param name="tagSizeComplete"></param>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.RewriteFile(System.IO.FileInfo)">
+            <summary>
+            create new output file stream and write the ID3v2 block to it
+            </summary>
+            <remarks>
+            makes a backup as it's modifying the tags and re-writing the audio.
+            Always need to re-initialise the mp3 file wrapper if you use it after this runs
+            </remarks>
+            <param name="bakFileInfo">location of backup file - must be on same drive</param>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.UpdateInSituNoV2tag">
+            <summary>
+            UpdateInSituNoV2tag
+            </summary>
+            <remarks>
+            doesn't make a backup as it's only modifying the tags not re-writing the audio
+            </remarks>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.RewriteFileNoV2tag(System.IO.FileInfo)">
+            <summary>
+            create new output file stream and don't write the ID3v2 block to it
+            </summary>
+            <remarks>
+            makes a backup as it's re-writing the audio
+            Always need to re-initialise the mp3 file wrapper if you use it after this runs
+            </remarks>
+            <param name="bakFileInfo">location of backup file - must be on same drive</param>
+        </member>
+        <member name="M:Mp3Lib.Mp3FileData.WriteID3v1(System.IO.Stream)">
+            <summary>
+            append or overwrite ID3v1 tag at the end of the audio
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="T:Mp3Lib.InvalidAudioFrameException">
+            <summary>
+            The exception is thrown when an audio frame is corrupt.
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.InvalidAudioFrameException.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.InvalidAudioFrameException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Mp3Lib.InvalidAudioFrameException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="inner"></param>
+        </member>
+        <member name="T:Mp3Lib.InvalidVbrSizeException">
+            <summary>
+            The exception is for when the vbr header claims the audio
+            is a different length to the file size.
+            This can happen if the file has been truncated at some point in its history,
+            but could also be if unrecognised tags (non-id3, e.g. monkey audio) are added to the file.
+            It is not thrown as such, because it's not an error that needs the parse to fail.
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.InvalidVbrSizeException.Measured">
+            <summary>
+            the number of zero bytes found after the last frame in the id3v2 tag
+            </summary>
+        </member>
+        <member name="P:Mp3Lib.InvalidVbrSizeException.Specified">
+            <summary>
+            the amount of space left over after the last frame in the id3v2 tag
+            </summary>
+        </member>
+        <member name="M:Mp3Lib.InvalidVbrSizeException.#ctor(System.UInt32,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="measured"></param>
+            <param name="specified"></param>
+        </member>
+        <member name="P:Mp3Lib.InvalidVbrSizeException.Message">
+            <summary>
+            overrides default message with a specific "Padding is corrupt" one
+            </summary>
+        </member>
+        <member name="T:Com.Hertkorn.Helper.Filesystem.FileMover">
+            <summary>
+            Provides FileMove function to wrap System.IO.File.Replace
+            </summary>
+        </member>
+        <member name="M:Com.Hertkorn.Helper.Filesystem.FileMover.FileMove(System.IO.FileInfo,System.IO.FileInfo,System.IO.FileInfo)">
+            <summary>
+            Securely moves a file to a new location. Overwrites any
+            preexisting file at new location (= replacing file).
+            </summary>
+            <remarks>
+            If NTFS is available this is done via File.Replace.
+            If NTFS is not available it will be moved via deleting
+            any preexisting file and moving. Do NOT rely on the
+            backupFile being there - or not - after the move process.
+            That is not predetermined. This method is clearly
+            optimized for the case that NTFS is available. Consider NOT
+            using it on any other filesystem, if performance is an issue!
+            </remarks>
+            <param name="sourceLocation">The file to be moved.</param>
+            <param name="targetLocation">The new resting place of the file.</param>
+            <param name="backupLocation">A backup location that is used when replacing.</param>
+        </member>
+    </members>
+</doc>
